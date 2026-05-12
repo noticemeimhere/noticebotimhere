@@ -30,7 +30,7 @@ async def test(cmd: ChatCommand):
     await cmd.reply(f'pong, {cmd.user.name}')
 
 async def helpcmd(cmd: ChatCommand):
-    await cmd.reply(f"Commands: !ping, !discord, !time, !whatdoing")
+    await cmd.reply(f"Commands: !ping, !time, !whatdoing")
 
 async def time(cmd: ChatCommand):
     await cmd.reply(f"The local time is: {datetime.now().strftime("%H:%M:%S")}")
@@ -40,17 +40,15 @@ async def whatdoing(cmd: ChatCommand):
 
 async def setdoing(cmd: ChatCommand):
     global whatdoingvar
-
-    if(cmd.user.name != "noticemeimhere"):
-        await cmd.reply("You do not have permissions to use this.")
-    else:
+    if(cmd.user.mod):
         whatdoingvar = cmd.parameter
         await cmd.reply(f"Set whatdoing to {cmd.parameter}!")
-
-
-
-
-
+    elif(cmd.user.name == "noticemeimhere"):
+        whatdoingvar = cmd.parameter
+        await cmd.reply(f"Set whatdoing to {cmd.parameter}!")
+    else:
+        await cmd.reply(f"You do not have permissions to use this command!")
+   
 
 #main
 async def run():
