@@ -18,22 +18,22 @@ CHANNEL = 'noticemeimhere'
 TOKEN_FILE = "token.txt"
 
 if(SECRET_ID == None or SECRET_PASS == None):
-    print(".ENV FILE NOT READ OR MISSING")
+    print(".ENV FILE MISSING OR NOT READ")
     quit()
 
 whatdoingvar = "@noticemeimhere, SETUP PLEASE!!!!!"
 
 async def on_ready(ready_event: EventData):
-    print('Bot is ready for work, joining channels')
+    print('I am alive, is nice.')
     await ready_event.chat.join_room(CHANNEL)
 
 async def on_message(msg: ChatMessage):
-    print(f'in {msg.room.name}, {msg.user.name} said: {msg.text}')
+    print(f'{msg.user.name}: {msg.text}')
 
 # Commands
 
 async def test(cmd: ChatCommand):
-    await cmd.reply(f'pong, {cmd.user.name}')
+    await cmd.reply(f'pong')
 
 async def helpcmd(cmd: ChatCommand):
     await cmd.reply(f"Commands: !ping, !time, !whatdoing")
@@ -77,11 +77,16 @@ async def run():
     chat.register_event(ChatEvent.READY, on_ready)
     chat.register_event(ChatEvent.MESSAGE, on_message)
 
+
+
     chat.register_command('ping', test)
     chat.register_command('help', helpcmd)
     chat.register_command('time', time)
     chat.register_command('whatdoing', whatdoing)
     chat.register_command('setdoing', setdoing)
+
+
+
     chat.start()
     try:
         input('press ENTER to stop\n')
