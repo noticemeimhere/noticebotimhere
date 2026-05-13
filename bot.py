@@ -9,11 +9,17 @@ import asyncio
 
 load_dotenv()
 
+
+
 SECRET_ID = os.getenv('SECRET_ID')
 SECRET_PASS = os.getenv('SECRET_PASS')
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
 CHANNEL = 'noticemeimhere'
 TOKEN_FILE = "token.txt"
+
+if(SECRET_ID == None or SECRET_PASS == None):
+    print(".ENV FILE NOT READ OR MISSING")
+    quit()
 
 whatdoingvar = "@noticemeimhere, SETUP PLEASE!!!!!"
 
