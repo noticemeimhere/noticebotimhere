@@ -67,6 +67,8 @@ async def dice(cmd: ChatCommand):
         await cmd.reply(f"Rolling a {cmd.parameter} sided die...")
         time.sleep(1)
         await cmd.reply(f"You rolled a {random.randint(1, int(cmd.parameter))}.")
+    else:
+        await cmd.reply(f"{cmd.parameter} is not a valid number.")
 
 async def followtime(cmd: ChatCommand):
     target = await first(cmd.chat.twitch.get_users(logins=cmd.user.name))
