@@ -15,7 +15,7 @@ load_dotenv()
 
 SECRET_ID = os.getenv('SECRET_ID')
 SECRET_PASS = os.getenv('SECRET_PASS')
-USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT, AuthScope.MODERATOR_READ_FOLLOWERS, AuthScope.CHANNEL_MANAGE_BROADCAST]
+USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT, AuthScope.MODERATOR_READ_FOLLOWERS]
 CHANNEL = 'noticemeimhere'
 TOKEN_FILE = "token.txt"
 
