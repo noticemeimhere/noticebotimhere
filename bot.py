@@ -1,10 +1,13 @@
 from dotenv import load_dotenv
 from datetime import datetime
 import os
+import random
+import time
 from twitchAPI.twitch import Twitch
 from twitchAPI.oauth import UserAuthenticator
 from twitchAPI.type import AuthScope, ChatEvent
 from twitchAPI.chat import Chat, EventData, ChatMessage, ChatSub, ChatCommand
+from twitchAPI.helper import first
 import asyncio
 
 load_dotenv()
@@ -13,7 +16,7 @@ load_dotenv()
 
 SECRET_ID = os.getenv('SECRET_ID')
 SECRET_PASS = os.getenv('SECRET_PASS')
-USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
+USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT, AuthScope.MODERATOR_READ_FOLLOWERS]
 CHANNEL = 'noticemeimhere'
 TOKEN_FILE = "token.txt"
 
@@ -36,13 +39,14 @@ async def test(cmd: ChatCommand):
     await cmd.reply(f'pong')
 
 async def helpcmd(cmd: ChatCommand):
-    await cmd.reply(f"Commands: !ping, !time, !what, !discord")
+    await cmd.reply(f"Commands: !ping, !time, !what, !discord, !roll (number), !followtime")
 
-async def time(cmd: ChatCommand):
-    await cmd.reply(f"The local time is: {datetime.now().strftime("%H:%M:%S")}")
+async def gettime(cmd: ChatCommand):
+    await cmd.reply(f"The local time is {datetime.now().strftime("%I:%M%p")}")
 
 async def whatdoing(cmd: ChatCommand):
     await cmd.reply(whatdoingvar)
+    cmd.user
 
 async def setdoing(cmd: ChatCommand):
     global whatdoingvar
@@ -57,7 +61,26 @@ async def setdoing(cmd: ChatCommand):
 
 async def discord(cmd: ChatCommand):
     await cmd.reply("Join the server! discord.gg/fHxHjgFDWD")
-   
+
+async def dice(cmd: ChatCommand):
+    if(cmd.parameter.isdigit()):
+        await cmd.reply(f"Rolling a {cmd.parameter} sided die...")
+        time.sleep(1)
+        await cmd.reply(f"You rolled a {random.randint(1, int(cmd.parameter))}.")
+
+async def followtime(cmd: ChatCommand):
+    target = await first(cmd.chat.twitch.get_users(logins=cmd.user.name))
+    steamer = await first(cmd.chat.twitch.get_users(logins=CHANNEL))
+
+    follower = await first(await cmd.chat.twitch.get_channel_followers(broadcaster_id=steamer.id, user_id=target.id))
+
+    if follower:
+        timefollowed = datetime.now(follower.followed_at.tzinfo) - follower.followed_at
+        days = timefollowed.days
+        await cmd.reply(f"{target.display_name} has been following for {days} days since {follower.followed_at.strftime('%b %d, %Y')}!")
+    else:
+        await cmd.reply(f"{follower.display_name} is not following me ):.")
+
 
 #main
 async def run():
@@ -84,10 +107,12 @@ async def run():
 
     chat.register_command('ping', test)
     chat.register_command('help', helpcmd)
-    chat.register_command('time', time)
+    chat.register_command('time', gettime)
     chat.register_command('what', whatdoing)
     chat.register_command('setdoing', setdoing)
     chat.register_command('discord', discord)
+    chat.register_command("roll", dice)
+    chat.register_command("followtime", followtime)
 
 
     chat.start()
