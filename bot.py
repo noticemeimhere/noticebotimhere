@@ -36,7 +36,7 @@ async def test(cmd: ChatCommand):
     await cmd.reply(f'pong')
 
 async def helpcmd(cmd: ChatCommand):
-    await cmd.reply(f"Commands: !ping, !time, !whatdoing")
+    await cmd.reply(f"Commands: !ping, !time, !what, !discord")
 
 async def time(cmd: ChatCommand):
     await cmd.reply(f"The local time is: {datetime.now().strftime("%H:%M:%S")}")
@@ -54,6 +54,9 @@ async def setdoing(cmd: ChatCommand):
         await cmd.reply(f"Set whatdoing to {cmd.parameter}!")
     else:
         await cmd.reply(f"You do not have permissions to use this command!")
+
+async def discord(cmd: ChatCommand):
+    await cmd.reply("Join the server! discord.gg/fHxHjgFDWD")
    
 
 #main
@@ -82,9 +85,9 @@ async def run():
     chat.register_command('ping', test)
     chat.register_command('help', helpcmd)
     chat.register_command('time', time)
-    chat.register_command('whatdoing', whatdoing)
+    chat.register_command('what', whatdoing)
     chat.register_command('setdoing', setdoing)
-
+    chat.register_command('discord', discord)
 
 
     chat.start()
