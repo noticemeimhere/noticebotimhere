@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 from datetime import datetime
 import os
 import random
-import time
 from twitchAPI.twitch import Twitch
 from twitchAPI.oauth import UserAuthenticator
 from twitchAPI.type import AuthScope, ChatEvent
@@ -16,7 +15,7 @@ load_dotenv()
 
 SECRET_ID = os.getenv('SECRET_ID')
 SECRET_PASS = os.getenv('SECRET_PASS')
-USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT, AuthScope.MODERATOR_READ_FOLLOWERS]
+USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT, AuthScope.MODERATOR_READ_FOLLOWERS, AuthScope.CHANNEL_MANAGE_BROADCAST]
 CHANNEL = 'noticemeimhere'
 TOKEN_FILE = "token.txt"
 
@@ -48,24 +47,13 @@ async def whatdoing(cmd: ChatCommand):
     await cmd.reply(whatdoingvar)
     cmd.user
 
-async def setdoing(cmd: ChatCommand):
-    global whatdoingvar
-    if(cmd.user.mod):
-        whatdoingvar = cmd.parameter
-        await cmd.reply(f"Set whatdoing to {cmd.parameter}!")
-    elif(cmd.user.name == "noticemeimhere"):
-        whatdoingvar = cmd.parameter
-        await cmd.reply(f"Set whatdoing to {cmd.parameter}!")
-    else:
-        await cmd.reply(f"You do not have permissions to use this command!")
-
 async def discord(cmd: ChatCommand):
     await cmd.reply("Join the server! discord.gg/fHxHjgFDWD")
 
 async def dice(cmd: ChatCommand):
     if(cmd.parameter.isdigit()):
         await cmd.reply(f"Rolling a {cmd.parameter} sided die...")
-        time.sleep(1)
+        await asyncio.sleep(1)
         await cmd.reply(f"You rolled a {random.randint(1, int(cmd.parameter))}.")
     else:
         await cmd.reply(f"{cmd.parameter} is not a whole number.")
@@ -83,6 +71,25 @@ async def followtime(cmd: ChatCommand):
     else:
         await cmd.reply(f"{follower.display_name} is not following me ):.")
 
+# moderator only commands
+async def setdoing(cmd: ChatCommand):
+    global whatdoingvar
+    if(cmd.user.mod):
+        whatdoingvar = cmd.parameter
+        await cmd.reply(f"Set whatdoing to {cmd.parameter}!")
+    elif(cmd.user.name == "noticemeimhere"):
+        whatdoingvar = cmd.parameter
+        await cmd.reply(f"Set whatdoing to {cmd.parameter}!")
+    else:
+        await cmd.reply(f"You do not have permissions to use this command!")
+
+async def settitle(cmd:ChatCommand):
+    if(cmd.user.mod or cmd.user.name == "noticemeimhere"):
+        streamer = await first(cmd.chat.twitch.get_users(logins=CHANNEL))
+        await cmd.chat.twitch.modify_channel_information(broadcaster_id=streamer.id, title=cmd.parameter)
+        await cmd.reply("got here")
+    else:
+        await cmd.reply(f"You do not have permission to use this command.")
 
 #main
 async def run():
@@ -96,9 +103,11 @@ async def run():
 
     else:
         print("No token found")
-        auth = UserAuthenticator(twitch,USER_SCOPE)
+        auth = UserAuthenticator(twitch, USER_SCOPE)
         token, refresh_token = await auth.authenticate()
+        await twitch.set_user_authentication(token, USER_SCOPE, refresh_token)
         with open(TOKEN_FILE, "w") as f:
+            print("Writing token to token.txt...")
             f.write(refresh_token)
 
     chat = await Chat(twitch)
@@ -115,6 +124,7 @@ async def run():
     chat.register_command('discord', discord)
     chat.register_command("roll", dice)
     chat.register_command("followtime", followtime)
+    chat.register_command("settitle", settitle)
 
 
     chat.start()
