@@ -83,13 +83,14 @@ async def setdoing(cmd: ChatCommand):
     else:
         await cmd.reply(f"You do not have permissions to use this command!")
 
-async def settitle(cmd:ChatCommand):
-    if(cmd.user.mod or cmd.user.name == "noticemeimhere"):
-        streamer = await first(cmd.chat.twitch.get_users(logins=CHANNEL))
-        await cmd.chat.twitch.modify_channel_information(broadcaster_id=streamer.id, title=cmd.parameter)
-        await cmd.reply("got here")
-    else:
-        await cmd.reply(f"You do not have permission to use this command.")
+# doesnt work due to permission issues but maybe ill impliment if i feel like it
+# async def settitle(cmd:ChatCommand):
+#     if(cmd.user.mod or cmd.user.name == "noticemeimhere"):  
+#         streamer = await first(cmd.chat.twitch.get_users(logins=CHANNEL))
+#         await cmd.chat.twitch.modify_channel_information(broadcaster_id=streamer.id, title=cmd.parameter)
+#         await cmd.reply("got here")
+#     else:
+#         await cmd.reply(f"You do not have permission to use this command.")
 
 #main
 async def run():
@@ -124,8 +125,6 @@ async def run():
     chat.register_command('discord', discord)
     chat.register_command("roll", dice)
     chat.register_command("followtime", followtime)
-    chat.register_command("settitle", settitle)
-
 
     chat.start()
     try:
