@@ -69,7 +69,7 @@ async def followtime(cmd: ChatCommand):
         days = timefollowed.days
         await cmd.reply(f"{target.display_name} has been following for {days} days since {follower.followed_at.strftime('%b %d, %Y')}!")
     else:
-        await cmd.reply(f"{follower.display_name} is not following me ):.")
+        await cmd.reply(f"{target.display_name} is not following me ):.")
 
 # moderator only commands
 async def setdoing(cmd: ChatCommand):
@@ -83,7 +83,7 @@ async def setdoing(cmd: ChatCommand):
     else:
         await cmd.reply(f"You do not have permissions to use this command!")
 
-# doesnt work due to permission issues but maybe ill impliment if i feel like it
+# doesnt work due to permission issues but maybe ill implement if i feel like it
 # async def settitle(cmd:ChatCommand):
 #     if(cmd.user.mod or cmd.user.name == "noticemeimhere"):  
 #         streamer = await first(cmd.chat.twitch.get_users(logins=CHANNEL))
