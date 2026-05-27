@@ -34,16 +34,16 @@ async def on_message(msg: ChatMessage):
 
 # Commands
 
-async def test(cmd: ChatCommand):
+async def ping(cmd: ChatCommand):
     await cmd.reply(f'pong')
 
-async def helpcmd(cmd: ChatCommand):
-    await cmd.reply(f"Commands: !ping, !time, !what, !discord, !roll (number), !followtime")
+async def commands(cmd: ChatCommand):
+    await cmd.reply(f"Commands: !time, !what, !discord, !roll (number), !followtime")
 
 async def gettime(cmd: ChatCommand):
     await cmd.reply(f"The local time is {datetime.now().strftime("%I:%M%p")}")
 
-async def whatdoing(cmd: ChatCommand):
+async def what(cmd: ChatCommand):
     await cmd.reply(whatdoingvar)
     cmd.user
 
@@ -117,10 +117,12 @@ async def run():
 
 
 
-    chat.register_command('ping', test)
-    chat.register_command('help', helpcmd)
+    chat.register_command('ping', ping)
+    chat.register_command('help', commands)
+    chat.register_command('cmds', commands)
+    chat.register_command('commands', commands)
     chat.register_command('time', gettime)
-    chat.register_command('what', whatdoing)
+    chat.register_command('what', what)
     chat.register_command('setdoing', setdoing)
     chat.register_command('discord', discord)
     chat.register_command("roll", dice)
