@@ -52,9 +52,17 @@ async def discord(cmd: ChatCommand):
 
 async def dice(cmd: ChatCommand):
     if(cmd.parameter.isdigit()):
-        await cmd.reply(f"Rolling a {cmd.parameter} sided die...")
-        await asyncio.sleep(1)
-        await cmd.reply(f"You rolled a {random.randint(1, int(cmd.parameter))}.")
+        try:
+            a = int(cmd.parameter)
+            if(a <= 1000):
+                await cmd.reply(f"Rolling a {cmd.parameter} sided die...")
+                await asyncio.sleep(1)
+                await cmd.reply(f"You rolled a {random.randint(1, int(cmd.parameter))}.")
+            else:
+                await cmd.reply("Please roll a number less than or equal to 1000.")
+        except ValueError:
+            await cmd.reply("Input not valid")
+        
     else:
         #space before cmd.parameter ensures that any input starting with "/" is not confused as a chat command by twitch, if there is no space bot will not reply
         await cmd.reply(f" {cmd.parameter} is not a whole number.")
