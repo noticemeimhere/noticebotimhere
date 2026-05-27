@@ -51,13 +51,12 @@ async def discord(cmd: ChatCommand):
     await cmd.reply("Join the server! discord.gg/fHxHjgFDWD")
 
 async def dice(cmd: ChatCommand):
-    print(cmd.parameter)
     if(cmd.parameter.isdigit()):
-        print("1")
         await cmd.reply(f"Rolling a {cmd.parameter} sided die...")
         await asyncio.sleep(1)
         await cmd.reply(f"You rolled a {random.randint(1, int(cmd.parameter))}.")
     else:
+        #space before cmd.parameter ensures that any input starting with "/" is not confused as a chat command by twitch, if there is no space bot will not reply
         await cmd.reply(f" {cmd.parameter} is not a whole number.")
 
 async def followtime(cmd: ChatCommand):
