@@ -61,8 +61,7 @@ async def dice(cmd: ChatCommand):
             else:
                 await cmd.reply("Please roll a number less than or equal to 1000.")
         except ValueError:
-            await cmd.reply("Input not valid")
-        
+            await cmd.reply(f" {cmd.parameter} is not a whole number.")
     else:
         #space before cmd.parameter ensures that any input starting with "/" is not confused as a chat command by twitch, if there is no space bot will not reply
         await cmd.reply(f" {cmd.parameter} is not a whole number.")
